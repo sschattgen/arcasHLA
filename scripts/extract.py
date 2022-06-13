@@ -129,7 +129,7 @@ def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads, memory_per
     file_list.append(hla_sorted + '.bai')
     message = '[extract] Sorting bam: '
     if memory_per_thread is not None:
-        command = ['samtools', 'sort', '-n', '-@'+threads, '-m'+memory_per_thread,
+        command = ['samtools', 'sort', '-n', '-@'+threads, '-m '+memory_per_thread,
                     hla_filtered_bam, '-o', hla_sorted]
     else:
         command = ['samtools', 'sort', '-n', '-@'+threads,
