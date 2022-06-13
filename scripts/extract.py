@@ -54,7 +54,7 @@ def index_bam(bam):
         sys.exit('[extract] Error: unable to index bam file.')
         
 
-def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads, memory_per_thread]):
+def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads, memory_per_thread):
     '''Extracts reads from chromosome 6 and alts/decoys if applicable.'''
     
     log.info(f'[extract] Extracting reads from {bam}')
