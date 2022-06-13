@@ -54,7 +54,7 @@ def index_bam(bam):
         sys.exit('[extract] Error: unable to index bam file.')
         
 
-def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads):
+def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads, memory_per_thread]):
     '''Extracts reads from chromosome 6 and alts/decoys if applicable.'''
     
     log.info(f'[extract] Extracting reads from {bam}')
@@ -118,7 +118,7 @@ def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads):
 
     # Convert SAM to BAM
     message = '[extract] Converting SAM to BAM: '
-    command = ['samtools', 'view', '-Sb', '-@'+threads,
+    command = ['samtools', 'view', '-Sb', '-@'+threads, 
                 hla_filtered, '>', hla_filtered_bam]    
     run_command(command, message)
             
@@ -128,8 +128,12 @@ def extract_reads(bam, outdir, paired, unmapped, alts, temp, threads):
     file_list.append(hla_sorted)
     file_list.append(hla_sorted + '.bai')
     message = '[extract] Sorting bam: '
-    command = ['samtools', 'sort', '-n', '-@'+threads, 
-                hla_filtered_bam, '-o', hla_sorted]
+    if memory_per_thread is not None:
+        command = ['samtools', 'sort', '-n', '-@'+threads, '-m'+memory_per_thread,
+                    hla_filtered_bam, '-o', hla_sorted]
+    else:
+        command = ['samtools', 'sort', '-n', '-@'+threads,
+            hla_filtered_bam, '-o', hla_sorted]
     run_command(command, message)
 
     # Convert BAM to FASTQ and compress
@@ -246,6 +250,12 @@ if __name__ == '__main__':
                         '--verbose', 
                         action = 'count',
                         default=False)
+
+    parser.add_argument('-m',
+                    '--memory_per_thread', 
+                    type = str,
+                    help='amount of memory in gb availble per cpu, e.g. 4G\n\n',
+                    default=None)
     
     args = parser.parse_args()
     
