@@ -311,7 +311,8 @@ if __name__ == '__main__':
                       args.unmapped,
                       alts,
                       temp,
-                      args.threads)
+                      args.threads,
+                      args.memory_per_thread)
 
     remove_files(temp, args.keep_files)
     
